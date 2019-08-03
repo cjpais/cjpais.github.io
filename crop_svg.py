@@ -13,7 +13,7 @@ if __name__ == "__main__":
     
     # get the new vbox from the inkscape output. the first line has the vbox
     # that we want
-    vbox = " ".join(is_out.split(",")[1:4])
+    vbox = " ".join(is_out.split(",")[1:5])
     print (vbox)
    
     # parse svg into xml
