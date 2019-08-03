@@ -1,6 +1,7 @@
 import subprocess
 import sys
 from xml.dom import minidom
+import re
 
 if __name__ == "__main__":
     # get file name from arguments
@@ -13,8 +14,7 @@ if __name__ == "__main__":
     
     # get the new vbox from the inkscape output. the first line has the vbox
     # that we want
-    vbox = " ".join(is_out.split(",")[1:5])
-    print (vbox)
+    vbox = " ".join(re.split(',|\n', is_out)[1:5])
    
     # parse svg into xml
     svg_xml = minidom.parse(svg_file)
