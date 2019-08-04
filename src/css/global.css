@@ -1,0 +1,24 @@
+body {
+	margin: 40px;
+}
+
+.container {
+}
+
+.header-grid {
+	display: grid;
+	grid-template-columns: 5fr 3fr 1fr 1fr;
+  grid-template-rows: minmax(20px, 100px)
+}
+
+.content {
+  grid-column-start: 1;
+  grid-column-end: 4;
+}
+
+.box {
+	background-color: #444;
+	color: #fff;
+	padding: 20px;
+	font-size: 150%;
+}

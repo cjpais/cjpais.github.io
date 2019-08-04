@@ -1,9 +1,14 @@
+import time
+from datetime import datetime
+import argparse
 import subprocess
 import sys
 import glob
 import os
 from xml.dom import minidom
 import re
+
+epoch = datetime.utcfromtimestamp(0)
 
 def gen_svg_from_pdf(pdf, svg):
     print("writing {} to {}".format(pdf, svg))
@@ -55,8 +60,21 @@ def crop_svg(svg):
     with open(svg, 'w') as f:
         svg_xml.writexml(f)
 
+def get_last_update():
+    try:
+        with open('last_updated.txt', 'r') as update_f:
+            # read in the file, strip newline and format into new datetime obj
+            t = update_f.read().replace('\n', '')
+            return datetime.strptime(t, '%Y-%m-%d %H:%M:%S.%f')
+    except (IOError, ValueError) as e:
+        # if the file couldnt open then return the epoch time
+        return epoch
 
 def process(idir, odir):
+    files = []
+    last_update = get_last_update()
+    print("last update {}".format(last_update))
+
     # go through all pdf in input dir
     for file in os.listdir(idir):
         if file.endswith(".pdf"):
@@ -64,18 +82,35 @@ def process(idir, odir):
             pdf_file = os.path.join(idir, file)
             svg_file = os.path.join(odir, file.split('.')[0] + ".svg")
 
-            # pdf to svg
-            gen_svg_from_pdf(pdf_file, svg_file)
+            # only if new file update the svg
+            last_modified_unix= os.path.getmtime(pdf_file)
+            last_modified = datetime.fromtimestamp(last_modified_unix)
 
-            # optimize svg
-            optimize_svg(svg_file)
+            # only do next steps if it's been updated since last time
+            if last_modified > last_update:
+                files.append(file)
+                # pdf to svg
+                gen_svg_from_pdf(pdf_file, svg_file)
 
-            # remove height and width attributes to fix some things
-            remove_svg_height_width(svg_file)
+                # optimize svg
+                optimize_svg(svg_file)
 
-            # crop
-            # crop_svg(svg_file)
+                # remove height and width attributes to fix some things
+                remove_svg_height_width(svg_file)
 
+                # crop
+                # crop_svg(svg_file)
+            else:
+                print("skipping {}. last modified @ {}".format(file, last_modified))
+
+
+    # write out new file for when we last generated in curr dir
+    if files != []:
+        with open('last_updated.txt', 'w') as update_f:
+            update_f.write(str(datetime.now()))
+
+    # return the list of new/updated files for commit message
+    return files
 
 if __name__ == "__main__":
     if len(sys.argv) >= 3:
