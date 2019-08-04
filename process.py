@@ -60,7 +60,7 @@ def process(idir, odir):
             optimize_svg(svg_file)
 
             # crop
-            crop_svg(svg_file)
+            # crop_svg(svg_file)
 
 
 if __name__ == "__main__":
