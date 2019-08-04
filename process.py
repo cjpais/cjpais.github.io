@@ -23,14 +23,17 @@ def crop_svg(svg):
     # get the new vbox from the inkscape output. the first line has the vbox
     # that we want
     print (is_out)
-    vbox = " ".join(re.split(',|\n', is_out)[1:5])
+    first_row = re.split(',|\n', is_out)
+    width = is_out[3]
+    height = is_out[4] 
+    vbox = " ".join(first_row[1:5])
    
     # parse svg into xml
     svg_xml = minidom.parse(svg)
 
     # remove height & width from svg + set viewbox from inkscape
-    svg_xml.childNodes[0].removeAttribute("height")
-    svg_xml.childNodes[0].removeAttribute("width")
+    svg_xml.childNodes[0].setAttribute("height", height)
+    svg_xml.childNodes[0].setAttribute("width", width)
     svg_xml.childNodes[0].setAttribute("viewBox", vbox)
 
     # write new xml
