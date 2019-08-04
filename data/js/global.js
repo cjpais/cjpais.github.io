@@ -6,5 +6,7 @@ window.onload = function() {
     bbox = svg.getBBox()
     viewBox = [bbox.x, bbox.y, bbox.width, bbox.height].join(" ")
     svg.setAttribute("viewBox", viewBox)
+    svg.remoteAttribute("height")
+    svg.remoteAttribute("width")
   }
 };
