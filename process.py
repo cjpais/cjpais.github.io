@@ -24,8 +24,12 @@ def crop_svg(svg):
     # that we want
     print (is_out)
     first_row = re.split(',|\n', is_out)
-    width = is_out[3]
-    height = is_out[4] 
+    print first_row
+
+    width = first_row[3]
+    height = first_row[4] 
+    print(width, height)
+
     vbox = " ".join(first_row[1:5])
    
     # parse svg into xml
