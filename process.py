@@ -9,7 +9,8 @@ def gen_svg_from_pdf(pdf, svg):
     print("writing {} to {}".format(pdf, svg))
 
     # create the svg
-    subprocess.call(["pdf2svg", pdf, svg])
+    #subprocess.call(["pdf2svg", pdf, svg])
+    subprocess.call(["inkscape", "--without-gui", "--file={}".format(pdf), "--export-plain-svg={}".format(svg)])
 
 def optimize_svg(svg):
     # on the new svg optimize with svgo
@@ -21,6 +22,7 @@ def crop_svg(svg):
     
     # get the new vbox from the inkscape output. the first line has the vbox
     # that we want
+    print (is_out)
     vbox = " ".join(re.split(',|\n', is_out)[1:5])
    
     # parse svg into xml
@@ -64,3 +66,10 @@ if __name__ == "__main__":
 
     # generate svg from pdf, optimize, and crop
     process(input_dir, output_dir)
+
+    # commit to git if enough args
+    if len(sys.argv) >= 4:
+        commit_msg = sys.argv[4]
+
+        subprocess.call(["git", "add", "*"])
+        subprocess.call(["git", "commit", "-m", commit_msg])
