@@ -16,6 +16,17 @@ def optimize_svg(svg):
     # on the new svg optimize with svgo
     subprocess.call(["svgo", svg])
 
+def remove_svg_height_width(svg):
+    svg_xml = minidom.parse(svg)
+
+    # remove height & width from svg + set viewbox from inkscape
+    svg_xml.childNodes[0].removeAttribute("height")
+    svg_xml.childNodes[0].removeAttribute("width")
+
+    # write new xml
+    with open(svg, 'w') as f:
+        svg_xml.writexml(f)
+
 def crop_svg(svg):
     # get output from inkscape
     is_out = subprocess.check_output(["inkscape", "--query-all", svg])
@@ -58,6 +69,9 @@ def process(idir, odir):
 
             # optimize svg
             optimize_svg(svg_file)
+
+            # remove height and width attributes to fix some things
+            remove_svg_height_width(svg_file)
 
             # crop
             # crop_svg(svg_file)
