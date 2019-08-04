@@ -8,6 +8,11 @@ body {
   grid-template-rows: minmax(20px, 100px)
 }
 
+.content {
+  grid-column-start: 1;
+  grid-column-end: 4;
+}
+
 .box {
 	background-color: #444;
 	color: #fff;
