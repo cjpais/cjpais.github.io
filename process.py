@@ -10,6 +10,7 @@ import re
 from jinja2 import Template, Environment, PackageLoader, select_autoescape
 
 epoch = datetime.utcfromtimestamp(0)
+url = 'cjpais.github.io/'
 header_files = ['Title.svg', 'Posts.svg', 'About.svg']
 env = Environment(
         loader = PackageLoader('process', 'src/templates'),
@@ -146,7 +147,7 @@ def gen_html():
     svg_dir = 'res/svg'
     for file in os.listdir(svg_dir):
         # get the full path for SVG
-        spath = "/" + os.path.join(svg_dir, file)
+        spath = url + os.path.join(svg_dir, file)
         hpath = ''
 
         # TODO remove hardcoding of index
