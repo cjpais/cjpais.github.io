@@ -146,7 +146,7 @@ def gen_html():
     svg_dir = 'res/svg'
     for file in os.listdir(svg_dir):
         # get the full path for SVG
-        spath = os.path.join(svg_dir, file)
+        spath = "/" + os.path.join(svg_dir, file)
         hpath = ''
 
         # TODO remove hardcoding of index
