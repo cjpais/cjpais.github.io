@@ -7,8 +7,18 @@ import glob
 import os
 from xml.dom import minidom
 import re
+from jinja2 import Template, Environment, PackageLoader, select_autoescape
 
 epoch = datetime.utcfromtimestamp(0)
+header_files = ['Title.svg', 'Posts.svg', 'About.svg']
+env = Environment(
+        loader = PackageLoader('process', 'src/templates'),
+        autoescape = select_autoescape(['html'])
+      )
+
+# what defines a page.
+class Page():
+    pass
 
 def gen_svg_from_pdf(pdf, svg):
     print("writing {} to {}".format(pdf, svg))
@@ -71,6 +81,7 @@ def get_last_update():
         return epoch
 
 def process(idir, odir):
+    print("\nProcessing {}...".format(idir))
     files = []
     last_update = get_last_update()
     print("last update {}".format(last_update))
@@ -112,7 +123,35 @@ def process(idir, odir):
     # return the list of new/updated files for commit message
     return files
 
+def gen_page(page):
+    print("gen page for {}".format(page))
+
+    page_temp = env.get_template('base.html')
+    title = page.split('/')[-1].split(".")[0]
+
+    page_data = page_temp.render(title=title, content_path=page)
+    with open(page, 'w') as new_page:
+        new_page.write(page_data)
+
+"""
+    Generate HTML from:
+        SVG resources (res/svg)
+        Jinja2 templates (src/templates)
+
+    TODO this is very 0.1. Not very generic at all. Needs rework of dir
+    structure. Able to define what should go in header etc. All programatic
+"""
+def gen_html():
+    print("\nGenerating HTML...")
+    for file in os.listdir('res/svg'):
+        if file == "TempIdx.svg":
+            gen_page('index.html')
+        elif file not in header_files:
+            gen_page('page/' + file.split('.')[0] + '.html')
+
 if __name__ == "__main__":
+    updated_s = ""
+
     if len(sys.argv) >= 3:
 	input_dir = sys.argv[1]
 	output_dir = sys.argv[2]
@@ -121,11 +160,13 @@ if __name__ == "__main__":
 	quit()
 
     # generate svg from pdf, optimize, and crop
-    process(input_dir, output_dir)
+    updated_pages = process(input_dir, output_dir)
+    updated_s = "updated pages from script: " + (",").join(updated_pages)
+
+    # gen HTML (for all pages) 
+    gen_html()
 
     # commit to git if enough args
-    if len(sys.argv) >= 4:
-        commit_msg = sys.argv[4]
-
+    if len(sys.argv) >= 4 and updated_s != "":
         subprocess.call(["git", "add", "*"])
-        subprocess.call(["git", "commit", "-m", commit_msg])
+        subprocess.call(["git", "commit", "-m", updated_s])
