@@ -181,3 +181,4 @@ if __name__ == "__main__":
     if len(sys.argv) >= 4 and updated_s != "":
         subprocess.call(["git", "add", "*"])
         subprocess.call(["git", "commit", "-m", updated_s])
+        subprocess.call(["git", "push", "origin", "master"])
