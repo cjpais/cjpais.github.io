@@ -10,3 +10,8 @@ Personal blog + scripts to make it work
   5. Process SVG -> 
   6. From the processed guy generate HTML pages from SVG (index + page)
   7. Commit to git repo and see
+
+## Dependencies
+  inkscape
+  inotify-tools
+  requirements.txt (Jinja2)
