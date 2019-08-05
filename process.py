@@ -129,7 +129,7 @@ def gen_page(page, svg):
     page_temp = env.get_template('base.html')
     title = page.split('/')[-1].split(".")[0]
 
-    page_data = page_temp.render(title=title, content_path=page)
+    page_data = page_temp.render(title=title, content_path=svg)
     with open(page, 'w') as new_page:
         new_page.write(page_data)
 
