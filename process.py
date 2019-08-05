@@ -123,8 +123,8 @@ def process(idir, odir):
     # return the list of new/updated files for commit message
     return files
 
-def gen_page(page):
-    print("gen page for {}".format(page))
+def gen_page(page, svg):
+    print("gen page for {} {}".format(page, svg))
 
     page_temp = env.get_template('base.html')
     title = page.split('/')[-1].split(".")[0]
@@ -143,11 +143,22 @@ def gen_page(page):
 """
 def gen_html():
     print("\nGenerating HTML...")
-    for file in os.listdir('res/svg'):
+    svg_dir = 'res/svg'
+    for file in os.listdir(svg_dir):
+        # get the full path for SVG
+        spath = os.path.join(svg_dir, file)
+        hpath = ''
+
+        # TODO remove hardcoding of index
+        # get html path for this file
         if file == "TempIdx.svg":
-            gen_page('index.html')
+            hpath = 'index.html'
         elif file not in header_files:
-            gen_page('page/' + file.split('.')[0] + '.html')
+            hpath = 'page/' + file.split('.')[0] + '.html'
+
+        # go ahead and gen the page now
+        if hpath != '':
+            gen_page(hpath, spath)
 
 if __name__ == "__main__":
     updated_s = ""
