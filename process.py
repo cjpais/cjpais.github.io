@@ -10,7 +10,6 @@ import re
 from jinja2 import Template, Environment, PackageLoader, select_autoescape
 
 epoch = datetime.utcfromtimestamp(0)
-url = 'cjpais.github.io/'
 header_files = ['Title.svg', 'Posts.svg', 'About.svg']
 env = Environment(
         loader = PackageLoader('process', 'src/templates'),
@@ -124,13 +123,13 @@ def process(idir, odir):
     # return the list of new/updated files for commit message
     return files
 
-def gen_page(page, svg):
+def gen_page(page, svg, base_dir):
     print("gen page for {} {}".format(page, svg))
 
     page_temp = env.get_template('base.html')
     title = page.split('/')[-1].split(".")[0]
 
-    page_data = page_temp.render(title=title, content_path=svg)
+    page_data = page_temp.render(title=title, content_path=svg, dir=base_dir)
     with open(page, 'w') as new_page:
         new_page.write(page_data)
 
@@ -144,10 +143,12 @@ def gen_page(page, svg):
 """
 def gen_html():
     print("\nGenerating HTML...")
-    svg_dir = 'res/svg'
+
+    svg_dir = 'res/svg/'
+    base_dir = ''
     for file in os.listdir(svg_dir):
         # get the full path for SVG
-        spath = url + os.path.join(svg_dir, file)
+        spath = os.path.join(svg_dir, file)
         hpath = ''
 
         # TODO remove hardcoding of index
@@ -156,10 +157,14 @@ def gen_html():
             hpath = 'index.html'
         elif file not in header_files:
             hpath = 'page/' + file.split('.')[0] + '.html'
+            spath = "../" + spath
+            base_dir = "../"
 
         # go ahead and gen the page now
         if hpath != '':
-            gen_page(hpath, spath)
+            # TODO this is a terrible way of doing this,
+            # just really lazy and want to get this to work
+            gen_page(hpath, spath, base_dir)
 
 if __name__ == "__main__":
     updated_s = ""
