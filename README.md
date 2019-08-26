@@ -12,6 +12,11 @@ Personal blog + scripts to make it work
   7. Commit to git repo and see
 
 ## Dependencies
-  inkscape
-  inotify-tools
-  requirements.txt (Jinja2)
+  * inkscape (for process.py)
+  * inotify-tools (for running process.py automagically)
+  * requirements.txt (Jinja2, static site generation) 
+  
+## Temp Notes on Pages:
+There are no hyperlinks as of yet. This will be added in a later revision of process.py that inserts links into the SVG's themselves. CSS style will come with this. For now other pages can be found manually by going [here](https://github.com/cjpais/cjpais.github.io/tree/master/page), then navigating to cjpais.com/page/<page.html>
+
+Needs directory structure in Notability. I will have to rearrange my Dropbox & process.py to support. This will be more natural but still not ideal. Needs a flag tagged (graph like) structure, not heirarchy. 
